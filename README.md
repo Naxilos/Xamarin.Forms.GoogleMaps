@@ -1,4 +1,21 @@
-## ![](logo.png) Xamarin.Forms.GoogleMaps 
+## ![](logo.png) Xamarin.Forms.GoogleMaps forked by Naxilos
+
+## Hello!
+
+Forked this repo to update packages and fix some issues I encounter using this plugin. 
+
+My changes includes (so far):
+- packages update on iOS and Android (june 2022) 
+- loading custom pins graphics from assets on Android
+- poliline now works inside scrollview on Android
+
+What I plan to add/fix later:
+- add custom caps in polyline
+- add dotted/dashed style to polyline
+</br></br>
+# Original repo README:
+
+--------------------------------------------------
 
 ![](https://img.shields.io/nuget/v/Xamarin.Forms.GoogleMaps.svg) ![](https://img.shields.io/nuget/dt/Xamarin.Forms.GoogleMaps.svg) [![Build status](https://build.appcenter.ms/v0.1/apps/99e6fb9e-fe8c-49df-b190-8aa1732a0ad2/branches/master/badge)](https://appcenter.ms) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Xamarin-Forms-GoogleMaps/public) [![donate/gumload](https://img.shields.io/badge/donate-gumload-orange.svg)](#donation)
 
