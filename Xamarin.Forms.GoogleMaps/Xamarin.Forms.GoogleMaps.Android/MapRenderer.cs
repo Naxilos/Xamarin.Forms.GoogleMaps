@@ -18,6 +18,7 @@ using Android.Widget;
 using Android.Views;
 using Xamarin.Forms.GoogleMaps.Android.Logics;
 using Xamarin.Forms.GoogleMaps.Internals;
+using Android.Util;
 
 namespace Xamarin.Forms.GoogleMaps.Android
 {
@@ -28,7 +29,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
     {
         readonly CameraLogic _cameraLogic;
         readonly UiSettingsLogic _uiSettingsLogic = new UiSettingsLogic();
-        
+
         internal IList<BaseLogic<GoogleMap>> Logics { get; }
 
         public MapRenderer(Context context) : base(context)
@@ -41,7 +42,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
                 new PolylineLogic(),
                 new PolygonLogic(),
                 new CircleLogic(),
-                new PinLogic(context, Config.BitmapDescriptorFactory, 
+                new PinLogic(context, Config.BitmapDescriptorFactory,
                     OnMarkerCreating, OnMarkerCreated, OnMarkerDeleting, OnMarkerDeleted),
                 new TileLayerLogic(),
                 new GroundOverlayLogic(context, Config.BitmapDescriptorFactory)
@@ -105,8 +106,8 @@ namespace Xamarin.Forms.GoogleMaps.Android
                     oldMap = e.OldElement;
                     Uninitialize(oldNativeMap, oldMap);
                     oldNativeView?.Dispose();
-                } 
-                catch (System.Exception ex) 
+                }
+                catch (System.Exception ex)
                 {
                     var message = ex.Message;
                     System.Diagnostics.Debug.WriteLine($"Uninitialize old view failed. - {message}");
@@ -126,12 +127,30 @@ namespace Xamarin.Forms.GoogleMaps.Android
             var activity = Context as Activity;
             if (activity != null)
             {
-                _scaledDensity = activity.GetScaledDensity();
+                var tmpSD = activity.GetScaledDensity();
+
+                if (tmpSD != 0)
+                {
+                    _scaledDensity = tmpSD;
+                }
+                else
+                {
+                    if (_scaledDensity == 0)
+                    {
+                        _scaledDensity = 2.75f;
+                    }
+                }
+
+                //_scaledDensity = activity.GetScaledDensity();
                 _cameraLogic.ScaledDensity = _scaledDensity;
                 foreach (var logic in Logics)
                 {
                     logic.ScaledDensity = _scaledDensity;
                 }
+            }
+            else
+            {
+                _scaledDensity = 2.75f;
             }
 
             var newMap = e.NewElement;
@@ -317,7 +336,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
         }
 
         private void UpdateHasZoomEnabled(
-            bool? initialZoomControlsEnabled = null, 
+            bool? initialZoomControlsEnabled = null,
             bool? initialZoomGesturesEnabled = null)
         {
 #pragma warning disable 618
@@ -346,7 +365,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
         private void UpdateMapStyle()
         {
             NativeMap.SetMapStyle(Map.MapStyle != null ?
-                new MapStyleOptions(Map.MapStyle.JsonStyle) : 
+                new MapStyleOptions(Map.MapStyle.JsonStyle) :
                 null);
         }
 
@@ -381,8 +400,8 @@ namespace Xamarin.Forms.GoogleMaps.Android
         void SetPadding()
         {
             NativeMap?.SetPadding(
-                (int)(Map.Padding.Left * _scaledDensity), 
-                (int)(Map.Padding.Top * _scaledDensity), 
+                (int)(Map.Padding.Left * _scaledDensity),
+                (int)(Map.Padding.Top * _scaledDensity),
                 (int)(Map.Padding.Right * _scaledDensity),
                 (int)(Map.Padding.Bottom * _scaledDensity));
         }
@@ -473,7 +492,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
 
         #endregion
 
-        private void Uninitialize(GoogleMap nativeMap, Map map) 
+        private void Uninitialize(GoogleMap nativeMap, Map map)
         {
             try
             {
